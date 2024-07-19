@@ -37,8 +37,7 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
 ## Resources
-- [Next.js](https://nextjs.org/)
-- [`next/font`](https://nextjs.org/docs/basic-features/font-optimization)
+- [next/font](https://nextjs.org/docs/basic-features/font-optimization)
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 - [Tailwind css](https://tailwindcss.com/docs/) - a utility-first CSS framework.
