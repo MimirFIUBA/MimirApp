@@ -13,19 +13,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-
 
 export default function Home() {
   const [open, setOpen] = React.useState(false);
@@ -74,8 +63,34 @@ export default function Home() {
 }
 
 function ProfileForm({ className }: React.ComponentProps<"form">) {
+  const callApi = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log(event);
+    try {
+      const formData = new FormData(event.currentTarget)
+      const response = await fetch('api/sensor', {
+        method: 'POST',
+        body: '{"name": "sensor nuevo", "description":"sensor from web app", "dataType":"float", "topic":"temp"}',
+      })
+ 
+      if (!response.ok) {
+        throw new Error('Failed to submit the data. Please try again.')
+      }
+ 
+      // Handle response if necessary
+      const data = await response.json()
+      // ...
+    } catch (error) {
+      // Capture the error message to display to the user
+      // setError(error.message)
+      console.error(error)
+    } finally {
+      // setIsLoading(false)
+    }
+  }
+
   return (
-    <form className="grid items-start gap-4">
+    <form className="grid items-start gap-4" onSubmit={callApi}>
       <div className="grid gap-2">
         <Label htmlFor="name">Nombre</Label>
         <Input id="name" />

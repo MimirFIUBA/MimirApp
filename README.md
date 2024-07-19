@@ -40,4 +40,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 - [Tailwind css](https://tailwindcss.com/docs/) - a utility-first CSS framework.
 - [shadcn](https://ui.shadcn.com/) - beautifully designed components that you can copy and paste into your apps.
+- [radix-ui - icons](https://www.radix-ui.com/icons)
 
