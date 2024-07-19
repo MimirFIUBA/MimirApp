@@ -68,7 +68,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div>Footer</div>
+      <div className="p-2">Footer</div>
     </div>
   );
 }
