@@ -25,12 +25,12 @@ export default function Home() {
           </div>
           <div className="flex flex-col grow justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2 w-[200px]">
               
-              <RegisterSensor />
-
               <Button className="p-2 w-full grow">
                 <PlusIcon className="mr-2 h-6 w-6" />Añadir cultivo
               </Button>
-              
+              <RegisterSensor />
+
+
           </div>
         </div>
       </div>
