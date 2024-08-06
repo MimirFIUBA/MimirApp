@@ -20,7 +20,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { useForm } from "react-hook-form"
+import { Control, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 
@@ -28,26 +28,40 @@ const formSchema = z.object({
     name: z.string().min(2, {
         message: "Name must be at least 2 characters.",
     }),
-    crop: z.string().min(2, {
-        message: "Crop name must be at least 2 characters."
-    }),
-    dataType: z.string()
+    groupId: z.string(),
 })
 
-export default function NewSensorForm({ onSubmit } : { onSubmit: () => void }) {
+interface NewNodeFormProps {
+    onSubmit?: () => void,
+    crops?: Array<Crop>,
+    crop?: Crop 
+}
+
+interface CropFieldProps {
+    control?: Control<{
+        name: string;
+        groupId: string;
+    }>,
+    crops?: Array<Crop>,
+    disabled?: boolean
+}
+
+export default function NewNodeForm({ onSubmit, crop, crops } : NewNodeFormProps) {
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: "",
+            groupId: crop?.id,
         },
     })
 
+    let isCropSelectionDisabled = crop != undefined
+
     const handleSubmit = async(values: z.infer<typeof formSchema>) => {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
         console.log(values)
         try {
-            const response = await fetch('api/sensor', {
+            const response = await fetch('api/nodes', {
                 method: 'POST',
                 body: JSON.stringify(values),
             })
@@ -58,8 +72,8 @@ export default function NewSensorForm({ onSubmit } : { onSubmit: () => void }) {
             
             // Handle response if necessary
             const data = await response.json()
-            onSubmit()
-            // ...
+            onSubmit?.()
+            
         } catch (error) {
             // Capture the error message to display to the user
             // setError(error.message)
@@ -88,47 +102,38 @@ export default function NewSensorForm({ onSubmit } : { onSubmit: () => void }) {
                     </FormItem>
                 )}
                 />
-                <FormField
-                control={form.control}
-                name="crop"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Cultivo</FormLabel>
-                    <FormControl>
-                        <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                    </FormItem>
-                )}
-                />
-                <FormField
-                control={form.control}
-                name="dataType"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Tipo de dato</FormLabel>
-                    <FormControl>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Selecciona un tipo de dato." />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                <SelectItem value="any">Any</SelectItem>
-                                <SelectItem value="boolean">Boolean</SelectItem>
-                                <SelectItem value="float">Float</SelectItem>
-                                <SelectItem value="int">Integer</SelectItem>
-                                <SelectItem value="string">String</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
-                    </FormControl>
-                    <FormMessage />
-                    </FormItem>
-                )}
-                />
+                <CropField control={form.control} crops={crops} disabled={isCropSelectionDisabled}></CropField>
                 <Button type="submit">Registrar</Button>
             </form>
-    </Form>
+        </Form>
     )
-  }
+}
+
+function CropField({control, crops, disabled} : CropFieldProps) {
+
+    return (
+        <FormField
+        control={control}
+        name="groupId"
+        render={({ field }) => (
+            <FormItem>
+                <FormLabel>Cultivo</FormLabel>
+                <FormControl>
+                    <Select onValueChange={field.onChange} defaultValue={field.value} disabled={disabled}>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Selecciona un cultivo." />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                {crops?.map((crop) => (
+                                    <SelectItem key={crop.id} value={crop.id}>{crop.name}</SelectItem>
+                                ))}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                </FormControl>
+                <FormMessage />
+            </FormItem>
+        )}/>
+    )
+}

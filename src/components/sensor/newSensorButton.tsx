@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,20 +11,21 @@ import {
     DialogTrigger,
   } from "@/components/ui/dialog"
 import { PlusIcon } from "@radix-ui/react-icons"
-import NewSensorForm from "@/sensor/newSensorForm"
+import NewSensorForm from "@/components/sensor/newSensorForm"
 
-export default function RegisterSensor() {
+export default function NewSensorButton({ crops, onSubmit } : { crops?: Array<Crop>, onSubmit?: () => void }) {
     const [open, setOpen] = React.useState(false);
 
     const handleOnSubmit = () => {
         setOpen(false)
+        onSubmit?.()
     }
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button className="p-2 w-full grow">
-                <PlusIcon className="mr-2 h-6 w-6" />Registrar Sensor
+                <Button>
+                    <PlusIcon className="mr-2 h-6 w-6" />Registrar Sensor
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
@@ -32,7 +35,7 @@ export default function RegisterSensor() {
                     Registrar un nuevo sensor. Cuando estes listo hace click en registrar.
                 </DialogDescription>
                 </DialogHeader>
-                <NewSensorForm onSubmit={handleOnSubmit}/>
+                <NewSensorForm onSubmit={handleOnSubmit} crops={crops}/>
             </DialogContent>
         </Dialog>
     );
