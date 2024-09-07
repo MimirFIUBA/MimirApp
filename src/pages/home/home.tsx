@@ -41,8 +41,28 @@ export default function Home() {
         .then((data) => {
             setCrops(data)
             setIsLoading(false)
-        })
-      }, [])
+        });
+
+        // WebSocketExample.js
+        const ws = new WebSocket("ws://localhost:8080/ws");
+        ws.onopen = () => {
+            console.log("Connected to WebSocket server");
+        };
+        ws.onmessage = (event) => {
+            // Handle incoming messages
+            console.log("Received:", event.data);
+        };
+        ws.onclose = () => {
+            console.log("Disconnected from WebSocket server");
+        };
+        return () => {
+            ws.close();
+        };
+    }, []);
+
+    useEffect(() => {
+
+    })
 
     const refresh = () => {
         fetch('/api/groups')
