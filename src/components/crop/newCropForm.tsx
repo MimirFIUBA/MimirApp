@@ -17,25 +17,37 @@ import { z } from "zod"
 
 const formSchema = z.object({
     name: z.string().min(2, {
-        message: "Name must be at least 2 characters.",
+        message: "El nombre debe tener al menos dos caracteres.",
     }),
-    description: z.string()
+    description: z.string(),
+    type: z.string()
 })
 
-export default function NewCropForm({ onSubmit } : { onSubmit: () => void }) {
+interface FormProps {
+    onSubmit: () => void,
+    crop?: Crop 
+}
+
+export default function NewCropForm({ onSubmit, crop } : FormProps) {
+    const defaultValues = {
+        name: "",
+        description: "",
+        type: ""
+    }
+    const values = (crop != undefined) ? crop : defaultValues
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: {
-            name: "",
-            description: "",
-        },
+        defaultValues: values
     })
 
     const handleSubmit = async(values: z.infer<typeof formSchema>) => {
-        console.log(values)
         try {
-            const response = await fetch('api/groups', {
-                method: 'POST',
+            const url = 'api/groups' + ((crop != undefined) ? ('/' + crop.id) : '') 
+            const method = (crop != undefined) ? 'PUT' : 'POST'
+
+            const response = await fetch(url, {
+                method: method,
                 body: JSON.stringify(values),
             })
         
@@ -67,9 +79,6 @@ export default function NewCropForm({ onSubmit } : { onSubmit: () => void }) {
                         <FormControl>
                             <Input {...field} />
                         </FormControl>
-                        <FormDescription>
-                            This is your public display name.
-                        </FormDescription>
                         <FormMessage />
                     </FormItem>
                 )}
@@ -80,6 +89,19 @@ export default function NewCropForm({ onSubmit } : { onSubmit: () => void }) {
                 render={({ field }) => (
                     <FormItem>
                         <FormLabel>Descripcion</FormLabel>
+                        <FormControl>
+                            <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}
+                />
+                <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Tipo</FormLabel>
                         <FormControl>
                             <Input {...field} />
                         </FormControl>

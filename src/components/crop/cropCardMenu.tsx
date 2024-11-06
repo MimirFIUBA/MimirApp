@@ -28,6 +28,7 @@ import { GearIcon } from "@radix-ui/react-icons"
 import Link from 'next/link'
 import NewSensorForm from "../sensor/newSensorForm";
 import NewNodeForm from "../sensorNode/newNodeForm";
+import NewCropForm from "./newCropForm";
 
 interface CropCardMenuProps {
   crop: Crop,
@@ -53,6 +54,10 @@ export function CropCardMenu({ ...props }: CropCardMenuProps) {
         setChildObject('sensor')
     }
 
+    const editCropHandler = () => {
+        setChildObject('crop')
+    }
+
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DropdownMenu>
@@ -62,17 +67,17 @@ export function CropCardMenu({ ...props }: CropCardMenuProps) {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56">
-                    <DropdownMenuLabel>{props.crop.name}</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
+                    {/* <DropdownMenuLabel>{props.crop.name}</DropdownMenuLabel> */}
+                    {/* <DropdownMenuSeparator /> */}
                     <DropdownMenuGroup>
                         <DialogTrigger asChild>
                             <DropdownMenuItem className="cursor-pointer" onClick={newNodeHandler}>
-                                Nuevo nodo
+                                Agregar Nodo
                             </DropdownMenuItem>
                         </DialogTrigger>
                         <DialogTrigger asChild>
                             <DropdownMenuItem className="cursor-pointer" onClick={newSensorHandler}>
-                                Nuevo sensor
+                                Agregar Sensor
                             </DropdownMenuItem>
                         </DialogTrigger>
                     </DropdownMenuGroup>
@@ -81,18 +86,17 @@ export function CropCardMenu({ ...props }: CropCardMenuProps) {
                         <DropdownMenuItem>
                             <Link href={cropViewURL}>Ver</Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>Editar</DropdownMenuItem>
+                        <DialogTrigger asChild>
+                            <DropdownMenuItem className="cursor-pointer" onClick={editCropHandler}>
+                                Editar
+                            </DropdownMenuItem>
+                        </DialogTrigger>
                     </DropdownMenuGroup>
                 </DropdownMenuContent>
             </DropdownMenu>
 
             <DialogPortal>
                 <FormDialogContent onSubmit={handleOnSubmit} object={childObject} crop={props.crop}></FormDialogContent>
-                {/* <DialogContent className="DialogContent">
-                    <DialogTitle>Nuevo {childObject}</DialogTitle>
-                    <DialogDescription>Registrar un nuevo nodo. Cuando estes listo hace click en registrar.</DialogDescription>
-                    { childObject === 'sensor' ? <NewSensorForm onSubmit={handleOnSubmit}></NewSensorForm> : <NewNodeForm onSubmit={handleOnSubmit}></NewNodeForm>}
-                </DialogContent> */}
             </DialogPortal>
         </Dialog>
     )
@@ -105,19 +109,31 @@ function FormDialogContent({ object, onSubmit, crop } : { object: string, onSubm
     }
     let title
     let description
+    let form
     if (object == 'sensor') {
-        title = "Nuevo Sensor"
+        title = "Agregar Sensor"
         description = "Registrar un nuevo sensor. Cuando estes listo hace click en registrar."
+        form = <NewSensorForm onSubmit={onSubmit}></NewSensorForm>
     } else if (object == 'node') {
-        title = "Nuevo Nodo"
+        title = "Agregar Nodo"
         description = "Registrar un nuevo nodo. Cuando estes listo hace click en registrar."
+        form = <NewNodeForm onSubmit={onSubmit} crop={crop} crops={crops}></NewNodeForm>
+    } else if (object == 'crop') {
+        title = "Editar Cultivo"
+        description = "Editar un cultivo existente. Cuando estes listo hace click en registrar."
+        const handleOnSubmit = () => {
+             if (onSubmit != undefined) {
+                onSubmit()
+            }
+        }
+        form = <NewCropForm onSubmit={handleOnSubmit} crop={crop} ></NewCropForm>
     }
 
     return (
         <DialogContent className="DialogContent">
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription>{description}</DialogDescription>
-            { object === 'sensor' ? <NewSensorForm onSubmit={onSubmit}></NewSensorForm> : <NewNodeForm onSubmit={onSubmit} crop={crop} crops={crops}></NewNodeForm>}
+            { form }
         </DialogContent>
     )
 }

@@ -4,19 +4,21 @@ import { Separator } from "@/components/ui/separator"
 export default function Sidebar() {
     return (
         <ScrollArea className="w-[200px]">
-            <h4 className="mb-4 text-sm font-medium leading-none">Sidebar</h4>
-            <div>
-              Home
+            <div className="mb-1">
+              Inicio
             </div>
-            <Separator/>
-            <div>
+            <div className="mb-1">
               Cultivos
             </div>
-            <Separator/>
-            <div>
+            <div className="mb-1">
               Sensores
             </div>
-            <Separator/>
+            <div className="mb-1">
+              Actuadores
+            </div>
+            <div className="mb-1">
+              Procesadores
+            </div>
         </ScrollArea>
     );
 }

@@ -25,7 +25,7 @@ export default function NewNodeButton({ crops, onSubmit } : { crops?: Array<Crop
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button>
-                    <PlusIcon className="mr-2 h-6 w-6" />Nuevo Nodo
+                    <PlusIcon className="mr-2 h-6 w-6" />Nodo
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
