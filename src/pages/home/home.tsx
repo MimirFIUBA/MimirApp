@@ -8,6 +8,7 @@ import CropCard from "../../components/crop/cropCard";
 import { useEffect, useState } from "react";
 import NewCropButton from "@/components/crop/newCropButton";
 import NewNodeButton from "@/components/sensorNode/newNodeButton";
+import Loading from "@/components/ui/loading";
 
 interface CropDashboardProps {
     loading: boolean,
@@ -74,7 +75,7 @@ export default function Home() {
     }
     
     return (
-        <div>
+        <>
             <div className="flex flex-row justify-between">
                 <div className="ml-4">
                     <Button variant="outline" className="mr-2" size="icon" onClick={refresh}>
@@ -88,7 +89,9 @@ export default function Home() {
                     <NewSensorButton crops={crops} onSubmit={refresh}/>
                 </div>
             </div>
-            {isLoading ? <p>Loading...</p> : <CropDashboard loading={isLoading} crops={crops} refresh={refresh} />}
-        </div>
+            {isLoading 
+                ? <Loading text="Cargando" />
+                : <CropDashboard loading={isLoading} crops={crops} refresh={refresh} />}
+        </>
     );
 }

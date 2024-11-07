@@ -11,6 +11,7 @@ type Crop = {
 type SensorNode = {
     id: string,
     name: string,
+    description: string,
     sensors: Array<Sensor>
 }
 

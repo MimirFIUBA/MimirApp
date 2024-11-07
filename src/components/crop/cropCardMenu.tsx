@@ -111,22 +111,22 @@ function FormDialogContent({ object, onSubmit, crop } : { object: string, onSubm
     let description
     let form
     if (object == 'sensor') {
-        title = "Agregar Sensor"
-        description = "Registrar un nuevo sensor. Cuando estes listo hace click en registrar."
-        form = <NewSensorForm onSubmit={onSubmit}></NewSensorForm>
+        title = "Agregar sensor al cultivo " + crop?.name
+        description = ""
+        form = <NewSensorForm onSubmit={onSubmit} crop={crop} crops={crops}></NewSensorForm>
     } else if (object == 'node') {
-        title = "Agregar Nodo"
-        description = "Registrar un nuevo nodo. Cuando estes listo hace click en registrar."
+        title = "Agregar nodo al cultivo " + crop?.name
+        description = ""
         form = <NewNodeForm onSubmit={onSubmit} crop={crop} crops={crops}></NewNodeForm>
     } else if (object == 'crop') {
         title = "Editar Cultivo"
-        description = "Editar un cultivo existente. Cuando estes listo hace click en registrar."
+        description = ""
         const handleOnSubmit = () => {
              if (onSubmit != undefined) {
                 onSubmit()
             }
         }
-        form = <NewCropForm onSubmit={handleOnSubmit} crop={crop} ></NewCropForm>
+        form = <NewCropForm onSubmit={handleOnSubmit} crop={crop}></NewCropForm>
     }
 
     return (

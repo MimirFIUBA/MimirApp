@@ -23,9 +23,9 @@ interface CropCardProps
 export default function CropCard({ className, ...props }: CropCardProps) {
     const crop = props.crop
     return (
-        <Card className={cn("w-[200px]", className)} {...props}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                <Link href={"/crop/" + crop.id + "/view"}>
+        <Card className={cn("w-[300px]", className)} {...props}>
+            <CardHeader className="flex flex-row items-start justify-between space-y-0">
+                <Link href={"/crop/" + crop.id + "/view"} className="pt-1">
                     <CardTitle>{crop!.name}</CardTitle>
                     <CardDescription className="mt-1">{crop!.description}</CardDescription>
                 </Link>
@@ -45,7 +45,7 @@ export default function CropCard({ className, ...props }: CropCardProps) {
                         </p>
                     </div>
                 </div> */}
-                <ScrollArea className="w-[350px]">
+                <ScrollArea >
                     <div className="flex flex-wrap">
                         {crop.nodes?.map((node) => (
                             <div key={node.id} className="flex flex-grow flex-col space-x-4 rounded-md border p-4 m-2">

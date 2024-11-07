@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input"
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -16,7 +15,6 @@ import {
     SelectContent,
     SelectGroup,
     SelectItem,
-    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
@@ -26,9 +24,12 @@ import { z } from "zod"
 
 const formSchema = z.object({
     name: z.string().min(2, {
-        message: "Name must be at least 2 characters.",
+        message: "El nombre debe tener al menos dos caracteres.",
     }),
-    groupId: z.string(),
+    description: z.string(),
+    groupId: z.string({
+        required_error: "El cultivo es requerido",
+    })
 })
 
 interface NewNodeFormProps {
@@ -40,6 +41,7 @@ interface NewNodeFormProps {
 interface CropFieldProps {
     control?: Control<{
         name: string;
+        description: string;
         groupId: string;
     }>,
     crops?: Array<Crop>,
@@ -52,6 +54,7 @@ export default function NewNodeForm({ onSubmit, crop, crops } : NewNodeFormProps
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: "",
+            description: "",
             groupId: crop?.id,
         },
     })
@@ -59,7 +62,6 @@ export default function NewNodeForm({ onSubmit, crop, crops } : NewNodeFormProps
     let isCropSelectionDisabled = crop != undefined
 
     const handleSubmit = async(values: z.infer<typeof formSchema>) => {
-        console.log(values)
         try {
             const response = await fetch('api/nodes', {
                 method: 'POST',
@@ -95,10 +97,20 @@ export default function NewNodeForm({ onSubmit, crop, crops } : NewNodeFormProps
                     <FormControl>
                         <Input {...field} />
                     </FormControl>
-                    <FormDescription>
-                        This is your public display name.
-                    </FormDescription>
                     <FormMessage />
+                    </FormItem>
+                )}
+                />
+                <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Descripci&oacute;n</FormLabel>
+                        <FormControl>
+                            <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
                     </FormItem>
                 )}
                 />

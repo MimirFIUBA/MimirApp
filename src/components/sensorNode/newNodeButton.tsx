@@ -31,9 +31,6 @@ export default function NewNodeButton({ crops, onSubmit } : { crops?: Array<Crop
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                 <DialogTitle>Nuevo Nodo</DialogTitle>
-                <DialogDescription>
-                    Registrar un nuevo nodo. Cuando estes listo hace click en registrar.
-                </DialogDescription>
                 </DialogHeader>
                 <NewNodeForm onSubmit={handleOnSubmit} crops={crops} />
             </DialogContent>

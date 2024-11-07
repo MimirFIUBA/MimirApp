@@ -11,7 +11,7 @@ export default function Home() {
       <div className="flex flex-col p-8 bg-slate-900 text-neutral-400">
         <Sidebar/>
       </div>
-      <div className="grow p-4">
+      <div className="flex flex-col grow p-4">
         <HomeCmp />
       </div>
     </div>

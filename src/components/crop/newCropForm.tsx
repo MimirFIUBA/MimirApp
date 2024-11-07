@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input"
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -88,7 +87,7 @@ export default function NewCropForm({ onSubmit, crop } : FormProps) {
                 name="description"
                 render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Descripcion</FormLabel>
+                        <FormLabel>Descripci&oacute;n</FormLabel>
                         <FormControl>
                             <Input {...field} />
                         </FormControl>
