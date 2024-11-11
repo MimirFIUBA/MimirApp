@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss"
 
 const config = {
-  darkMode: ["class"],
+  darkMode: ["selector"],
   content: [
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
@@ -27,8 +27,8 @@ const config = {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
-          dark: "hsl(var(--primary-dark))",
-          focus: "hsl(var(--primary-focus))"
+          focus: "hsl(var(--primary-focus))",
+          dark: "hsl(var(--primary-dark))"
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
