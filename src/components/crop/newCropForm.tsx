@@ -5,46 +5,68 @@ import { Input } from "@/components/ui/input"
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
+import { useToast } from "@/components/ui/use-toast"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 
 const formSchema = z.object({
     name: z.string().min(2, {
-        message: "Name must be at least 2 characters.",
+        message: "El nombre debe tener al menos dos caracteres.",
     }),
-    description: z.string()
+    description: z.string(),
+    type: z.string()
 })
 
-export default function NewCropForm({ onSubmit } : { onSubmit: () => void }) {
+interface FormProps {
+    onSubmit: () => void,
+    crop?: Crop 
+}
+
+export default function NewCropForm({ onSubmit, crop } : FormProps) {
+    const { toast } = useToast()
+    const defaultValues = {
+        name: "",
+        description: "",
+        type: ""
+    }
+    const values = (crop != undefined) ? crop : defaultValues
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: {
-            name: "",
-            description: "",
-        },
+        defaultValues: values
     })
 
     const handleSubmit = async(values: z.infer<typeof formSchema>) => {
-        console.log(values)
         try {
-            const response = await fetch('api/groups', {
-                method: 'POST',
+            const url = 'api/groups' + ((crop != undefined) ? ('/' + crop.id) : '') 
+            const method = (crop != undefined) ? 'PUT' : 'POST'
+
+            const response = await fetch(url, {
+                method: method,
                 body: JSON.stringify(values),
             })
         
             if (!response.ok) {
-                throw new Error('Failed to submit the data. Please try again.')
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: "There was a problem with your request.",
+                })
+            } else {
+                const data = await response.json()
+                toast({
+                    variant: "success",
+                    title: "Success.",
+                    description: "Your request was submitted successfuly.",
+                })
             }
             
-            // Handle response if necessary
-            const data = await response.json()
             onSubmit()
         } catch (error) {
             // Capture the error message to display to the user
@@ -67,9 +89,6 @@ export default function NewCropForm({ onSubmit } : { onSubmit: () => void }) {
                         <FormControl>
                             <Input {...field} />
                         </FormControl>
-                        <FormDescription>
-                            This is your public display name.
-                        </FormDescription>
                         <FormMessage />
                     </FormItem>
                 )}
@@ -79,7 +98,20 @@ export default function NewCropForm({ onSubmit } : { onSubmit: () => void }) {
                 name="description"
                 render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Descripcion</FormLabel>
+                        <FormLabel>Descripci&oacute;n</FormLabel>
+                        <FormControl>
+                            <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}
+                />
+                <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Tipo</FormLabel>
                         <FormControl>
                             <Input {...field} />
                         </FormControl>

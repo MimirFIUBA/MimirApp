@@ -8,6 +8,7 @@ import CropCard from "../../components/crop/cropCard";
 import { useEffect, useState } from "react";
 import NewCropButton from "@/components/crop/newCropButton";
 import NewNodeButton from "@/components/sensorNode/newNodeButton";
+import Loading from "@/components/ui/loading";
 
 interface CropDashboardProps {
     loading: boolean,
@@ -18,7 +19,7 @@ interface CropDashboardProps {
 function CropDashboard({...props} : CropDashboardProps) {
     const crops = props.crops
     if (props.crops == undefined || props.loading) {
-        return <p>Fede</p>
+        return <p></p>
     } 
     return (
         <div className="m-2 flex flex-row flex-wrap">
@@ -74,17 +75,23 @@ export default function Home() {
     }
     
     return (
-        <div>
-            <div className="flex flex-row justify-end space-x-2">
-                <Button variant="outline" className="mr-8" size="icon" onClick={refresh}>
-                    <ReloadIcon className="h-4 w-4 m-2" />
-                </Button>
+        <>
+            <div className="flex flex-row justify-between">
+                <div className="ml-4">
+                    <Button variant="outline" className="mr-2" size="icon" onClick={refresh}>
+                        <ReloadIcon className="h-4 w-4 m-2" />
+                    </Button>
+                </div>
 
-                <NewCropButton onSubmit={refresh} />
-                <NewNodeButton crops={crops} onSubmit={refresh}/>
-                <NewSensorButton crops={crops} onSubmit={refresh}/>
+                <div className="space-x-2">
+                    <NewCropButton onSubmit={refresh} />
+                    <NewNodeButton crops={crops} onSubmit={refresh}/>
+                    <NewSensorButton crops={crops} onSubmit={refresh}/>
+                </div>
             </div>
-            {isLoading ? <p>Loading...</p> : <CropDashboard loading={isLoading} crops={crops} refresh={refresh} />}
-        </div>
+            {isLoading 
+                ? <Loading text="Cargando" />
+                : <CropDashboard loading={isLoading} crops={crops} refresh={refresh} />}
+        </>
     );
 }

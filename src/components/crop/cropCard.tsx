@@ -23,18 +23,18 @@ interface CropCardProps
 export default function CropCard({ className, ...props }: CropCardProps) {
     const crop = props.crop
     return (
-        <Card className={cn("w-[380px]", className)} {...props}>
-            <CardHeader className="flex flex-row align-top justify-between space-y-0">
-                <Link href={"/crop/" + crop.id + "/view"}>
+        <Card className={cn("w-[300px]", className)} {...props}>
+            <CardHeader className="flex flex-row items-start justify-between space-y-0">
+                <Link href={"/crop/" + crop.id + "/view"} className="pt-1">
                     <CardTitle>{crop!.name}</CardTitle>
-                    <CardDescription>{crop!.description}</CardDescription>
+                    <CardDescription className="mt-1">{crop!.description}</CardDescription>
                 </Link>
                 <div className="m-0">
                     <CropCardMenu crop={crop} onSubmit={props.onSubmit}></CropCardMenu>
                 </div>
             </CardHeader>
             <CardContent className="grid gap-4">
-                <div className="flex items-center space-x-4 rounded-md border p-4">
+                {/* <div className="flex items-center space-x-4 rounded-md border p-4">
                     <BellIcon />
                     <div className="flex-1 space-y-1">
                         <p className="text-sm font-medium leading-none">
@@ -44,8 +44,8 @@ export default function CropCard({ className, ...props }: CropCardProps) {
                         Here will appear alerts if any
                         </p>
                     </div>
-                </div>
-                <ScrollArea className="h-[200px] w-[350px]">
+                </div> */}
+                <ScrollArea >
                     <div className="flex flex-wrap">
                         {crop.nodes?.map((node) => (
                             <div key={node.id} className="flex flex-grow flex-col space-x-4 rounded-md border p-4 m-2">
@@ -63,7 +63,6 @@ export default function CropCard({ className, ...props }: CropCardProps) {
                 </ScrollArea>
             </CardContent>
             <CardFooter>
-                Footer
             </CardFooter>
         </Card>
     )

@@ -25,15 +25,12 @@ export default function NewSensorButton({ crops, onSubmit } : { crops?: Array<Cr
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button>
-                    <PlusIcon className="mr-2 h-6 w-6" />Registrar Sensor
+                    <PlusIcon className="mr-2 h-6 w-6" />Sensor
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                 <DialogTitle>Registrar sensor</DialogTitle>
-                <DialogDescription>
-                    Registrar un nuevo sensor. Cuando estes listo hace click en registrar.
-                </DialogDescription>
                 </DialogHeader>
                 <NewSensorForm onSubmit={handleOnSubmit} crops={crops}/>
             </DialogContent>

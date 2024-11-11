@@ -27,15 +27,12 @@ export default function NewCropButton({ onSubmit } : { onSubmit: () => void }) {
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button>
-                    <PlusIcon className="mr-2 h-6 w-6" />Nuevo Cultivo
+                    <PlusIcon className="mr-2 h-6 w-6" />Cultivo
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                 <DialogTitle>Nuevo Cultivo</DialogTitle>
-                <DialogDescription>
-                    Crear un nuevo cultivo. Cuando estes listo hace click en guardar.
-                </DialogDescription>
                 </DialogHeader>
                 <NewCropForm onSubmit={handleOnSubmit}/>
             </DialogContent>

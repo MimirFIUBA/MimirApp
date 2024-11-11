@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input"
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -16,7 +15,6 @@ import {
     SelectContent,
     SelectGroup,
     SelectItem,
-    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
@@ -28,42 +26,49 @@ import { useState } from "react";
 
 const formSchema = z.object({
     name: z.string().min(2, {
-        message: "Name must be at least 2 characters.",
+        message: "El nombre debe tener al menos dos caracteres.",
     }),
-    crop: z.string(),
-    nodeId: z.string(),
-    dataType: z.string()
+    groupId: z.string({
+        required_error: "El cultivo es requerido",
+    }),
+    nodeId: z.string({
+        required_error: "El nodo es requerido",
+    }),
+    dataType: z.string({
+        required_error: "El tipo de dato es requerido",
+    })
 })
 
 interface NewSensorFormProps {
     onSubmit?: () => void,
     crops?: Array<Crop>,
     crop?: Crop,
-    node?: SensorNode,
     nodes?: Array<SensorNode>
+    node?: SensorNode,
 }
 
 interface CropFieldProps {
     control: Control<{
         name: string;
-        crop: string;
+        groupId: string;
         nodeId: string;
         dataType: string;
     }>,
     crops?: Array<Crop>,
     crop?: Crop,
+    disabled?: boolean
 }
 
 interface NodeFieldProps {
     control: Control<{
         name: string;
-        crop: string;
+        groupId: string;
         nodeId: string;
         dataType: string;
     }>,
     crop?: Crop,
-    node?: SensorNode,
     nodes?: Array<SensorNode>
+    node?: SensorNode,
 }
 
 interface NodeSelectGroupProps {
@@ -72,12 +77,12 @@ interface NodeSelectGroupProps {
     nodes?: Array<SensorNode>
 }
 
-
 export default function NewSensorForm({ ...props } : NewSensorFormProps) {
     const { toast } = useToast()
-    const [ selectedCrop, setSelectedCrop ] = useState<Crop|undefined>()
+    const [ selectedCrop, setSelectedCrop ] = useState<Crop|undefined>(props.crop)
 
     let crops = props.crops
+    let isCropSelectionDisabled = props.crop != undefined
 
     const handleOnChangeCrop = (
         value: string,
@@ -94,12 +99,11 @@ export default function NewSensorForm({ ...props } : NewSensorFormProps) {
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: "",
+            groupId: selectedCrop?.id,
         },
     })
 
     const handleSubmit = async(values: z.infer<typeof formSchema>) => {
-        console.log(values)
-
         try {
             const response = await fetch('api/sensors', {
                 method: 'POST',
@@ -135,13 +139,13 @@ export default function NewSensorForm({ ...props } : NewSensorFormProps) {
         return (
             <FormField
             control={props.control}
-            name="crop"
+            name="groupId"
             render={({ field }) => (
                 <FormItem>
                     <FormLabel>Cultivo</FormLabel>
                     <FormControl>
                         <Select onValueChange={(value: string) =>
-                            handleOnChangeCrop(value, field.onChange)} defaultValue={field.value}>
+                            handleOnChangeCrop(value, field.onChange)} defaultValue={field.value} disabled={props.disabled}>
                             <SelectTrigger>
                                 <SelectValue placeholder="Selecciona un cultivo." />
                             </SelectTrigger>
@@ -224,14 +228,11 @@ export default function NewSensorForm({ ...props } : NewSensorFormProps) {
                     <FormControl>
                         <Input {...field} />
                     </FormControl>
-                    <FormDescription>
-                        This is your public display name.
-                    </FormDescription>
                     <FormMessage />
                     </FormItem>
                 )}
                 />
-                <CropField control={form.control} crops={props.crops}></CropField>
+                <CropField control={form.control} crops={props.crops} disabled={isCropSelectionDisabled}></CropField>
                 <NodeField control={form.control} nodes={selectedCrop?.nodes}></NodeField>
                 <FormField
                 control={form.control}
