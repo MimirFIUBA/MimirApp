@@ -10,6 +10,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
+import { useToast } from "@/components/ui/use-toast"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -28,6 +29,7 @@ interface FormProps {
 }
 
 export default function NewCropForm({ onSubmit, crop } : FormProps) {
+    const { toast } = useToast()
     const defaultValues = {
         name: "",
         description: "",
@@ -51,11 +53,20 @@ export default function NewCropForm({ onSubmit, crop } : FormProps) {
             })
         
             if (!response.ok) {
-                throw new Error('Failed to submit the data. Please try again.')
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: "There was a problem with your request.",
+                })
+            } else {
+                const data = await response.json()
+                toast({
+                    variant: "success",
+                    title: "Success.",
+                    description: "Your request was submitted successfuly.",
+                })
             }
             
-            // Handle response if necessary
-            const data = await response.json()
             onSubmit()
         } catch (error) {
             // Capture the error message to display to the user

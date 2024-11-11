@@ -19,10 +19,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <div className="flex flex-col min-h-screen">
-          <div className="flex p-4 pl-8 bg-gradient-to-l from-slate-700 to-slate-900 min-h-16 items-center z-40">
-            <h1 className="text-neutral-400 text-xl font-bold ">MIMIR</h1>
+          <div className="flex p-4 pl-8 bg-gradient-to-l from-primary-dark to-primary min-h-16 items-center shadow z-40">
+            <h1 className="text-primary-foreground text-xl font-bold ">MIMIR</h1>
           </div>
-          <div className="flex flex-row items-stretch grow bg-gradient-to-b from-slate-700 to-slate-900">
+          <div className="flex flex-row items-stretch grow ">
             {children}
           </div>
         </div>
