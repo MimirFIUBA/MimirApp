@@ -39,7 +39,7 @@ export default function Home() {
         fetch('/api/groups')
         .then((res) => res.json())
         .then((data) => {
-            setCrops(data)
+            setCrops(data.items)
             setIsLoading(false)
         });
 
@@ -68,7 +68,7 @@ export default function Home() {
         fetch('/api/groups')
         .then((res) => res.json())
         .then((data) => {
-            setCrops(data)
+            setCrops(data.items)
             setIsLoading(false)
         })
     }
