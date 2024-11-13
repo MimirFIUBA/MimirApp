@@ -27,12 +27,12 @@ export default async function RootLayout({
   return (
     <html lang="en" className="">
       <body className={inter.className}>
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen bg-white dark:bg-gradient-to-b dark:from-slate-700 dark:to-slate-900">
           <SidebarProvider defaultOpen={defaultOpen}>
             <AppSidebar />
-            <main>
+            <main className="w-full">
               <Header/>
-              <div className="flex flex-row items-stretch grow bg-white dark:bg-gradient-to-b dark:from-slate-700 dark:to-slate-900">
+              <div>
                 {children}
               </div>
             </main>

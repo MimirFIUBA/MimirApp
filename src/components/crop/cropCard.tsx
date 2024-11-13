@@ -25,7 +25,7 @@ export default function CropCard({ className, ...props }: CropCardProps) {
     return (
         <Card className={cn("w-[300px]", className)} {...props}>
             <CardHeader className="flex flex-row items-start justify-between space-y-0">
-                <Link href={"/crop/" + crop.id + "/view"} className="pt-1">
+                <Link href={"/crops/" + crop.id + "/view"} className="pt-1">
                     <CardTitle>{crop!.name}</CardTitle>
                     <CardDescription className="mt-1">{crop!.description}</CardDescription>
                 </Link>

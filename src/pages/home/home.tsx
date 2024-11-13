@@ -61,18 +61,14 @@ export default function Home() {
         };
     }, []);
 
-    useEffect(() => {
-
-    })
-
     const refresh = () => {
-        fetch('/api/groups')
+        fetch('api/groups')
         .then((res) => res.json())
         .then((data) => {
-            setCrops(data.items)
-            setIsLoading(false)
+            setCrops(data.items);
+            setIsLoading(false);
         })
-    }
+    };
     
     return (
         <>

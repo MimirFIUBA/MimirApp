@@ -11,7 +11,8 @@ import {
   SidebarFooter
 } from "@/components/ui/sidebar"
 
-import { HomeIcon, DragHandleDots2Icon, GlobeIcon, Share1Icon, RocketIcon, BellIcon } from "@radix-ui/react-icons"
+import { HomeIcon, RocketIcon, BellIcon } from "@radix-ui/react-icons"
+import { Grass, Sensors, Hub } from '@mui/icons-material';
    
 // Menu items.
 const items = [
@@ -23,17 +24,17 @@ const items = [
   {
     title: "Cultivos",
     url: "/crops",
-    icon: DragHandleDots2Icon,
+    icon: Grass,
   },
   {
     title: "Nodos",
     url: "/nodes",
-    icon: Share1Icon,
+    icon: Hub,
   },
   {
     title: "Sensores",
     url: "/topics",
-    icon: GlobeIcon,
+    icon: Sensors,
   },
   {
     title: "Triggers",
