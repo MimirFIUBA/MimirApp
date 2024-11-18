@@ -63,7 +63,7 @@ export default function NewNodeForm({ onSubmit, crop, crops } : NewNodeFormProps
 
     const handleSubmit = async(values: z.infer<typeof formSchema>) => {
         try {
-            const response = await fetch('api/nodes', {
+            const response = await fetch('/api/nodes', {
                 method: 'POST',
                 body: JSON.stringify(values),
             })

@@ -14,6 +14,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
+import { SwapVert } from "@mui/icons-material"
  
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -39,7 +40,7 @@ import Loading from "@/components/ui/loading";
 import Link from 'next/link'
 
 
-export const columns: ColumnDef<Crop>[] = [
+export const columns: ColumnDef<Sensor>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -67,19 +68,19 @@ export const columns: ColumnDef<Crop>[] = [
         header: ({ column }) => {
         return (
             <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                variant="ghost"
+                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
-            Nombre
-            <ArrowUpDown />
+                Nombre
+                <SwapVert className="ml-2"/>
             </Button>
         )
         },
         cell: ({ row }) => {
-            const crop = row.original;
+            const sensor = row.original;
             return (
                 <div className="capitalize">
-                    <Link href={"/crops/" + crop.id + "/view"} className="pt-1">
+                    <Link href={"/sensor/" + sensor.id + "/view"} className="pt-1">
                         {row.getValue("name")}
                     </Link>
                 </div>
@@ -87,31 +88,74 @@ export const columns: ColumnDef<Crop>[] = [
         },
     },
     {
-        accessorKey: "nodes",
-        header: () => <div className="text-right"># Nodos</div>,
+        accessorKey: "lastSensedReading",
+        header: () => {
+        return (
+            <div>
+                Valor Actual
+            </div>
+        )
+        },
         cell: ({ row }) => {
-            const nodes: Array<SensorNode> = row.getValue("nodes")
-            let nodesCount = 0
-            if (nodes != null) {
-                nodesCount = nodes.length
-            }
-            return <div className="text-right font-medium">{nodesCount}</div>
+            const reading: SensorReading = row.getValue("lastSensedReading")
+            return(
+                <div>
+                    {JSON.stringify(reading.value)}
+                </div>
+            )
         },
     },
     {
-        accessorKey: "sensors",
-        header: () => <div className="text-right"># Sensores</div>,
+        accessorKey: "nodeName",
+        header: ({ column }) => {
+        return (
+            <Button
+                variant="ghost"
+                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+                Nodo
+                <SwapVert className="ml-2"/>
+            </Button>
+        )
+        },
         cell: ({ row }) => {
-            let sensorsCount = 0;
-            const nodes: Array<SensorNode> = row.getValue("nodes")
-            if (nodes!= null) {
-                nodes.forEach(node => {
-                    if (node.sensors != null) {
-                        sensorsCount += node.sensors.length
-                    }
-                })
+            const node: SensorNode = row.original.node;
+            if (node != null) {
+                return (
+                    <div className="capitalize">
+                        {node.name}
+                    </div>
+                )
             }
-            return <div className="text-right font-medium">{sensorsCount}</div>
+            return (<div></div>)
+        },
+    },
+    {
+        accessorKey: "groupName",
+        header: ({ column }) => {
+            return (
+                <Button
+                variant="ghost"
+                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Grupo
+                    <SwapVert className="ml-2"/>
+                </Button>
+            )
+        },
+        cell: ({ row }) => {
+            const node: SensorNode = row.original.node;
+            if (node != null) {
+                const group: Crop = node.group
+                if (group != null) {
+                    return (
+                        <div className="capitalize">
+                            {group.name}
+                        </div>
+                    )
+                }
+            }
+            return (<div></div>)
         },
     },
     {
@@ -145,12 +189,12 @@ export const columns: ColumnDef<Crop>[] = [
     },
 ]
 
-interface CropTableProps {
+interface SensorTableProps {
     loading: boolean,
-    crops: Crop[]
+    sensors: Sensor[]
 }
 
-export function CropTable({...props} : CropTableProps) {
+export function SensorTable({...props} : SensorTableProps) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
         []
@@ -158,7 +202,7 @@ export function CropTable({...props} : CropTableProps) {
     const [columnVisibility, setColumnVisibility] =
         React.useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = React.useState({})
-    let data = props.crops
+    let data = props.sensors
 
     const table = useReactTable({
         data,
@@ -179,13 +223,13 @@ export function CropTable({...props} : CropTableProps) {
         },
     })
 
-    const crops = props.crops
+    const sensors = props.sensors
 
     return (
         <div className="w-full">
         <div className="flex items-center py-4">
             <Input
-            placeholder="Filtrar cultivos..."
+            placeholder="Filtrar sensores..."
             value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
                 table.getColumn("name")?.setFilterValue(event.target.value)

@@ -13,10 +13,19 @@ type SensorNode = {
     name: string,
     description: string,
     sensors: Array<Sensor>
+    group: Crop
 }
 
 type Sensor = {
     id: string,
     name: string,
-    readings: Array<Object>
+    lastSensedReading: SensorReading,
+    readings: Array<Object>,
+    node: SensorNode
+}
+
+type SensorReading = {
+    value: Object,
+    topic: string,
+    time: Date 
 }

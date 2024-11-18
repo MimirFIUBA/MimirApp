@@ -59,12 +59,10 @@ export default function Header() {
     return(
         <div className="flex p-4 pl-8 min-h-16 
         bg-gradient-to-l from-primary to-primary-dark text-primary-foreground shadow
-        items-center  z-40 ">
-            <SidebarTrigger />
+        items-center z-40 ">
+            <SidebarTrigger/>
             <h1 className="text-xl font-bold pl-2">MIMIR</h1>
             <span className="flex-1"></span>
-
-            <span/>
             <span>
                 <AlertButton count={50}></AlertButton>
             </span>

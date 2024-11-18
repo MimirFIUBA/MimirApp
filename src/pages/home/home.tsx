@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import NewCropButton from "@/components/crop/newCropButton";
 import NewNodeButton from "@/components/sensorNode/newNodeButton";
 import Loading from "@/components/ui/loading";
+import ErrorDisplayer from "@/components/error-displayer";
 
 interface CropDashboardProps {
     loading: boolean,
@@ -18,12 +19,12 @@ interface CropDashboardProps {
 
 function CropDashboard({...props} : CropDashboardProps) {
     const crops = props.crops
-    if (props.crops == undefined || props.loading) {
+    if (crops == undefined || props.loading) {
         return <p></p>
     } 
     return (
         <div className="m-2 flex flex-row flex-wrap">
-            {props.crops.map((crop) => (
+            {crops.map((crop) => (
                 <div key={crop.id} className="m-2">
                     <CropCard crop={crop} onSubmit={props.refresh} />
                 </div>
@@ -35,30 +36,44 @@ function CropDashboard({...props} : CropDashboardProps) {
 export default function Home() {
     const [crops, setCrops] = useState<Crop[]>([])
     const [isLoading, setIsLoading] = useState(true)
+    const [errorMessage, setErrorMessage] = useState("")
 
     useEffect(() => {
         fetch('/api/groups')
-        .then((res) => res.json())
+        .then((res) => {
+            console.log(res)
+            if (res.status != 200) {
+                throw new Error(res.statusText)
+            } else {
+                return res.json()
+            }
+        })
         .then((data) => {
             setCrops(data.items)
             setIsLoading(false)
+        })
+        .catch(error => {
+            setErrorMessage("No pudimos cargar la informacion de los cultivos: " + error.message)
+        })
+        .finally(() => {
+            setIsLoading(false)
         });
 
-        // WebSocketExample.js
-        const ws = new WebSocket("ws://localhost:8080/ws");
-        ws.onopen = () => {
-            console.log("Connected to WebSocket server");
-        };
-        ws.onmessage = (event) => {
-            // Handle incoming messages
-            console.log("Received:", event.data);
-        };
-        ws.onclose = () => {
-            console.log("Disconnected from WebSocket server");
-        };
-        return () => {
-            ws.close();
-        };
+        // // WebSocketExample.js
+        // const ws = new WebSocket("ws://localhost:8080/ws");
+        // ws.onopen = () => {
+        //     console.log("Connected to WebSocket server");
+        // };
+        // ws.onmessage = (event) => {
+        //     // Handle incoming messages
+        //     console.log("Received:", event.data);
+        // };
+        // ws.onclose = () => {
+        //     console.log("Disconnected from WebSocket server");
+        // };
+        // return () => {
+        //     ws.close();
+        // };
     }, []);
 
     const refresh = () => {
@@ -85,9 +100,15 @@ export default function Home() {
                     <NewSensorButton crops={crops} onSubmit={refresh}/>
                 </div>
             </div>
-            {isLoading 
+            {
+                isLoading 
                 ? <Loading text="Cargando" />
-                : <CropDashboard loading={isLoading} crops={crops} refresh={refresh} />}
+                : <CropDashboard loading={isLoading} crops={crops} refresh={refresh} />
+            }
+            {
+                errorMessage != "" &&
+                <ErrorDisplayer message={errorMessage}></ErrorDisplayer>
+            }
         </>
     );
 }

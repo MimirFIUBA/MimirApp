@@ -7,6 +7,8 @@ import { AppSidebar } from "@/components/app-sidebar"
 import Header from "@/components/header"
 
 import "./globals.css";
+import { Toaster } from "@/components/ui/toaster";
+import { WebSocketProvider } from "@/hooks/websocket-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,20 +26,24 @@ export default async function RootLayout({
 }>) {
   const cookieStore = await cookies()
   const defaultOpen = cookieStore.get("sidebar:state")?.value === "true"
+  
   return (
     <html lang="en" className="">
       <body className={inter.className}>
-        <div className="flex flex-col min-h-screen bg-white dark:bg-gradient-to-b dark:from-slate-700 dark:to-slate-900">
-          <SidebarProvider defaultOpen={defaultOpen}>
-            <AppSidebar />
-            <main className="w-full">
-              <Header/>
-              <div>
-                {children}
-              </div>
-            </main>
-          </SidebarProvider>
-        </div>
+        <WebSocketProvider url="ws://localhost:8080/ws">
+          <Toaster></Toaster>
+          <div className="flex flex-col min-h-screen bg-white dark:bg-gradient-to-b dark:from-slate-700 dark:to-slate-900">
+            <SidebarProvider defaultOpen={defaultOpen}>
+              <AppSidebar />
+              <main className="w-full">
+                <Header/>
+                <div>
+                  {children}
+                </div>
+              </main>
+            </SidebarProvider>
+          </div>
+        </WebSocketProvider>
       </body>
     </html>
   );

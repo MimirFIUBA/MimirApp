@@ -35,20 +35,65 @@ interface CropCardMenuProps {
   onSubmit?: () => void
 }
 
-export function CropCardMenu({ ...props }: CropCardMenuProps) {
+interface FormDialogProps {
+    object: string,
+    onSubmit?: () => void,
+    crop?: Crop
+}
+
+const FormDialogContent = React.forwardRef<HTMLDivElement, FormDialogProps>(
+    ({ object, onSubmit, crop }, ref) => {
+        let crops = []
+        if (crop != undefined) {
+            crops.push(crop)
+        }
+        let title
+        let description
+        let form
+        if (object == 'sensor') {
+            title = "Agregar sensor al cultivo " + crop?.name
+            description = ""
+            form = <NewSensorForm onSubmit={onSubmit} crop={crop} crops={crops}></NewSensorForm>
+        } else if (object == 'node') {
+            title = "Agregar nodo al cultivo " + crop?.name
+            description = ""
+            form = <NewNodeForm onSubmit={onSubmit} crop={crop} crops={crops}></NewNodeForm>
+        } else if (object == 'crop') {
+            title = "Editar Cultivo"
+            description = ""
+            const handleOnSubmit = () => {
+                if (onSubmit != undefined) {
+                    onSubmit()
+                }
+            }
+            form = <NewCropForm onSubmit={handleOnSubmit} crop={crop}></NewCropForm>
+        }
+
+        return (
+            <DialogContent className="DialogContent">
+                <DialogTitle>{title}</DialogTitle>
+                <DialogDescription>{description}</DialogDescription>
+                { form }
+            </DialogContent>
+        )
+    }
+)
+
+export const CropCardMenu = React.forwardRef<HTMLDivElement, CropCardMenuProps>(
+    ({ crop, onSubmit }, ref) => {
     const [childObject, setChildObject] = React.useState('node');
     const [open, setOpen] = React.useState(false);
 
     const handleOnSubmit = () => {
         setOpen(false)
-        props.onSubmit?.()
+        onSubmit?.()
     }
-    
-    const cropViewURL = "/crop/" + props.crop.id + "/view"
+
+    const cropViewURL = "/crop/" + crop.id + "/view"
 
     const newNodeHandler = () => {
         setChildObject('node')
-        }
+    }
         
     const newSensorHandler = () => {
         setChildObject('sensor')
@@ -67,8 +112,6 @@ export function CropCardMenu({ ...props }: CropCardMenuProps) {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56">
-                    {/* <DropdownMenuLabel>{props.crop.name}</DropdownMenuLabel> */}
-                    {/* <DropdownMenuSeparator /> */}
                     <DropdownMenuGroup>
                         <DialogTrigger asChild>
                             <DropdownMenuItem className="cursor-pointer" onClick={newNodeHandler}>
@@ -96,44 +139,8 @@ export function CropCardMenu({ ...props }: CropCardMenuProps) {
             </DropdownMenu>
 
             <DialogPortal>
-                <FormDialogContent onSubmit={handleOnSubmit} object={childObject} crop={props.crop}></FormDialogContent>
+                <FormDialogContent onSubmit={handleOnSubmit} object={childObject} crop={crop}></FormDialogContent>
             </DialogPortal>
         </Dialog>
     )
-}
-
-function FormDialogContent({ object, onSubmit, crop } : { object: string, onSubmit?: () => void, crop?: Crop }) {
-    let crops = []
-    if (crop != undefined) {
-        crops.push(crop)
-    }
-    let title
-    let description
-    let form
-    if (object == 'sensor') {
-        title = "Agregar sensor al cultivo " + crop?.name
-        description = ""
-        form = <NewSensorForm onSubmit={onSubmit} crop={crop} crops={crops}></NewSensorForm>
-    } else if (object == 'node') {
-        title = "Agregar nodo al cultivo " + crop?.name
-        description = ""
-        form = <NewNodeForm onSubmit={onSubmit} crop={crop} crops={crops}></NewNodeForm>
-    } else if (object == 'crop') {
-        title = "Editar Cultivo"
-        description = ""
-        const handleOnSubmit = () => {
-             if (onSubmit != undefined) {
-                onSubmit()
-            }
-        }
-        form = <NewCropForm onSubmit={handleOnSubmit} crop={crop}></NewCropForm>
-    }
-
-    return (
-        <DialogContent className="DialogContent">
-            <DialogTitle>{title}</DialogTitle>
-            <DialogDescription>{description}</DialogDescription>
-            { form }
-        </DialogContent>
-    )
-}
+})

@@ -174,7 +174,11 @@ export default function NewSensorForm({ ...props } : NewSensorFormProps) {
         }
 
         return (
-            <p>No crops to select.</p>
+            <SelectGroup>
+                <p className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none">
+                    No hay cultivos para seleccionar.
+                </p>
+            </SelectGroup>
         )
     }
 
@@ -214,6 +218,14 @@ export default function NewSensorForm({ ...props } : NewSensorFormProps) {
                 </SelectGroup>
             )
         }
+
+        return (
+            <SelectGroup>
+                <p className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none">
+                    No hay nodos para seleccionar.
+                </p>
+            </SelectGroup>
+        )
     }
 
     return (

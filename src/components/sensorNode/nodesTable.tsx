@@ -39,7 +39,7 @@ import Loading from "@/components/ui/loading";
 import Link from 'next/link'
 
 
-export const columns: ColumnDef<Crop>[] = [
+export const columns: ColumnDef<SensorNode>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -76,10 +76,10 @@ export const columns: ColumnDef<Crop>[] = [
         )
         },
         cell: ({ row }) => {
-            const crop = row.original;
+            const node = row.original;
             return (
                 <div className="capitalize">
-                    <Link href={"/crops/" + crop.id + "/view"} className="pt-1">
+                    <Link href={"/nodes/" + node.id + "/view"} className="pt-1">
                         {row.getValue("name")}
                     </Link>
                 </div>
@@ -87,29 +87,13 @@ export const columns: ColumnDef<Crop>[] = [
         },
     },
     {
-        accessorKey: "nodes",
-        header: () => <div className="text-right"># Nodos</div>,
-        cell: ({ row }) => {
-            const nodes: Array<SensorNode> = row.getValue("nodes")
-            let nodesCount = 0
-            if (nodes != null) {
-                nodesCount = nodes.length
-            }
-            return <div className="text-right font-medium">{nodesCount}</div>
-        },
-    },
-    {
         accessorKey: "sensors",
-        header: () => <div className="text-right"># Sensores</div>,
+        header: () => <div className="text-right"># Sensors</div>,
         cell: ({ row }) => {
-            let sensorsCount = 0;
-            const nodes: Array<SensorNode> = row.getValue("nodes")
-            if (nodes!= null) {
-                nodes.forEach(node => {
-                    if (node.sensors != null) {
-                        sensorsCount += node.sensors.length
-                    }
-                })
+            const sensors: Array<SensorNode> = row.getValue("sensors")
+            let sensorsCount = 0
+            if (sensors != null) {
+                sensorsCount = sensors.length
             }
             return <div className="text-right font-medium">{sensorsCount}</div>
         },
@@ -145,12 +129,12 @@ export const columns: ColumnDef<Crop>[] = [
     },
 ]
 
-interface CropTableProps {
+interface NodeTableProps {
     loading: boolean,
-    crops: Crop[]
+    nodes: SensorNode[]
 }
 
-export function CropTable({...props} : CropTableProps) {
+export function NodeTable({...props} : NodeTableProps) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
         []
@@ -158,7 +142,7 @@ export function CropTable({...props} : CropTableProps) {
     const [columnVisibility, setColumnVisibility] =
         React.useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = React.useState({})
-    let data = props.crops
+    let data = props.nodes
 
     const table = useReactTable({
         data,
@@ -179,13 +163,13 @@ export function CropTable({...props} : CropTableProps) {
         },
     })
 
-    const crops = props.crops
+    const nodes = props.nodes
 
     return (
         <div className="w-full">
         <div className="flex items-center py-4">
             <Input
-            placeholder="Filtrar cultivos..."
+            placeholder="Filtrar nodos..."
             value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
                 table.getColumn("name")?.setFilterValue(event.target.value)

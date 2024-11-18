@@ -23,7 +23,7 @@ interface CropCardProps
 export default function CropCard({ className, ...props }: CropCardProps) {
     const crop = props.crop
     return (
-        <Card className={cn("w-[300px]", className)} {...props}>
+        <Card className={cn("w-[300px] h-[400px]", className)} {...props}>
             <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <Link href={"/crops/" + crop.id + "/view"} className="pt-1">
                     <CardTitle>{crop!.name}</CardTitle>
@@ -34,27 +34,34 @@ export default function CropCard({ className, ...props }: CropCardProps) {
                 </div>
             </CardHeader>
             <CardContent className="grid gap-4">
-                {/* <div className="flex items-center space-x-4 rounded-md border p-4">
+                <div className="flex items-center space-x-4 rounded-md border p-4">
                     <BellIcon />
                     <div className="flex-1 space-y-1">
                         <p className="text-sm font-medium leading-none">
-                        Alerts!
+                            Alerts!
                         </p>
-                        <p className="text-sm text-muted-foreground">
-                        Here will appear alerts if any
+                        <p className="text-xs text-muted-foreground">
+                            Here will appear alerts if any
                         </p>
                     </div>
-                </div> */}
-                <ScrollArea >
-                    <div className="flex flex-wrap">
+                </div>
+                <ScrollArea className="w-[250px] h-[200px]">
+                    <div className="flex flex-col flex-wrap">
                         {crop.nodes?.map((node) => (
-                            <div key={node.id} className="flex flex-grow flex-col space-x-4 rounded-md border p-4 m-2">
+                            <div key={node.id} className="flex flex-1 flex-grow flex-col rounded-md border p-4 m-2">
                                 <h1 className="text-sm mb-2 font-medium leading-none">{node.name}</h1>
                                 <div className="flex-1 space-y-1">
                                     {node.sensors?.map((sensor) => (
-                                        <p key={sensor.id} className="text-sm text-muted-foreground">
-                                            {sensor.name}
-                                        </p>
+                                        <div key={sensor.id} className="flex flex-row">
+                                            <p className="text-xs">
+                                                {sensor.name}
+                                            </p>
+                                            {
+                                                sensor.lastSensedReading ? 
+                                                <p>{JSON.stringify(sensor.lastSensedReading.value)}</p>
+                                                : <p className="text-xs text-muted-foreground ml-2">No data</p>
+                                            }
+                                        </div>
                                     ))}
                                 </div>
                             </div>
