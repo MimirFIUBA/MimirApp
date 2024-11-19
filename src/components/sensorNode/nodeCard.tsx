@@ -20,8 +20,7 @@ interface CropCardProps
 }
 
 export default function NodeCard({ className, ...props }: CropCardProps) {
-    const node : SensorNode = props.node 
-    console.log(node)
+    const node : SensorNode = props.node
     return (
         <Card className={cn("w-[300px]", className)} {...props}>
             <CardHeader className="flex flex-row items-start justify-between space-y-0">

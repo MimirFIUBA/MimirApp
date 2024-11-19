@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import PageHeader from "@/components/page-header";
 import NewNodeButton from "@/components/sensorNode/newNodeButton";
 import { NodeTable } from "@/components/sensorNode/nodesTable";
+import { Hub } from '@mui/icons-material';
 
 export default function Page() {
 
@@ -31,6 +32,7 @@ export default function Page() {
     return (
         <div>
             <PageHeader
+                icon={<Hub></Hub>}
                 title="Nodos"
                 subtitle="Administra tus nodos"
                 rigthComponent={<NewNodeButton></NewNodeButton>}

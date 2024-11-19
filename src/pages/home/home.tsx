@@ -10,11 +10,58 @@ import NewCropButton from "@/components/crop/newCropButton";
 import NewNodeButton from "@/components/sensorNode/newNodeButton";
 import Loading from "@/components/ui/loading";
 import ErrorDisplayer from "@/components/error-displayer";
+import PageHeader from "@/components/page-header";
+import { Home } from "@mui/icons-material";
+import { useWebSocket } from "@/hooks/websocket-provider";
 
 interface CropDashboardProps {
     loading: boolean,
     refresh: () => void,
     crops?: Crop[]
+}
+
+function updateSensorReading(
+    crops: Crop[],
+    sensorId: string,
+    value: SensorReading
+): Crop[] {
+    var updatedCrops: Crop[] = [];
+
+    if (crops != null) {
+        var updatedCrops = crops.map((crop) => {
+            if (crop.nodes != null) {
+                const updatedNodes = crop.nodes.map((node) => {
+                    if (node.sensors != null) {
+                        const updatedSensors = node.sensors.map((sensor) => {
+                            if (sensor.name === sensorId) {
+                                return {
+                                    ...sensor,
+                                    lastSensedReading: value,
+                                };
+                            }
+                            return sensor;
+                        });
+    
+                        return {
+                            ...node,
+                            sensors: updatedSensors,
+                        };
+                    }
+                    return node;
+                });
+                return {
+                    ...crop,
+                    nodes: updatedNodes,
+                };
+            }
+            return crop;
+        });
+    
+        if (updatedCrops != undefined) {
+            return updatedCrops
+        }
+    }
+    return [];
 }
 
 function CropDashboard({...props} : CropDashboardProps) {
@@ -33,15 +80,34 @@ function CropDashboard({...props} : CropDashboardProps) {
     )
 }
 
-export default function Home() {
+export default function HomeCmp() {
     const [crops, setCrops] = useState<Crop[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [errorMessage, setErrorMessage] = useState("")
+    const { messages, isConnected, sendMessage } = useWebSocket();
+    
+    useEffect(() => {
+        // Escucha solo los mensajes relevantes para actualizar el valor del sensor
+        const latestSensorMessage = messages.findLast((msg) => msg.type === "update");
+    
+        if (latestSensorMessage) {
+            const sensorId: string = latestSensorMessage.payload.sensorId
+            const value: Object = latestSensorMessage.payload.value
+            const reading: SensorReading = {
+                value: value,
+                topic: sensorId,
+                time: new Date()
+            }
+            if (crops != undefined) {
+                let updatedCrops = updateSensorReading(crops, sensorId, reading)
+                setCrops(updatedCrops)
+            }
+        }
+    }, [messages]);
 
     useEffect(() => {
         fetch('/api/groups')
         .then((res) => {
-            console.log(res)
             if (res.status != 200) {
                 throw new Error(res.statusText)
             } else {
@@ -58,22 +124,6 @@ export default function Home() {
         .finally(() => {
             setIsLoading(false)
         });
-
-        // // WebSocketExample.js
-        // const ws = new WebSocket("ws://localhost:8080/ws");
-        // ws.onopen = () => {
-        //     console.log("Connected to WebSocket server");
-        // };
-        // ws.onmessage = (event) => {
-        //     // Handle incoming messages
-        //     console.log("Received:", event.data);
-        // };
-        // ws.onclose = () => {
-        //     console.log("Disconnected from WebSocket server");
-        // };
-        // return () => {
-        //     ws.close();
-        // };
     }, []);
 
     const refresh = () => {
@@ -87,6 +137,7 @@ export default function Home() {
     
     return (
         <>
+        <PageHeader icon={<Home></Home>} title="Home" className="p-6"></PageHeader>
             <div className="flex flex-row justify-between">
                 <div className="ml-4">
                     <Button variant="outline" className="mr-2" size="icon" onClick={refresh}>

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import PageHeader from "@/components/page-header";
 import NewSensorButton from "@/components/sensor/newSensorButton";
 import { SensorTable } from "@/components/sensor/sensor-table";
+import { Sensors } from "@mui/icons-material";
 
 export default function Page() {
     const [sensors, setSensors] = useState<Sensor[]>([])
@@ -28,6 +29,7 @@ export default function Page() {
     return (
         <div>
             <PageHeader
+                icon={<Sensors></Sensors>}
                 title="Sensores"
                 subtitle="Administra tus sensores"
                 rigthComponent={<NewSensorButton></NewSensorButton>}

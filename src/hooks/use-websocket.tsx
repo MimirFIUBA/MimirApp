@@ -22,7 +22,6 @@ export function useWebSocket(url: string) {
 
     ws.onmessage = (event: MessageEvent) => {
       try {
-        console.log(event.data)
         const data: WebSocketMessage = JSON.parse(event.data);
         setMessages((prev) => [...prev, data]);
       } catch (error) {

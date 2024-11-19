@@ -100,7 +100,10 @@ export const columns: ColumnDef<Sensor>[] = [
             const reading: SensorReading = row.getValue("lastSensedReading")
             return(
                 <div>
-                    {JSON.stringify(reading.value)}
+                    { 
+                        reading && 
+                        JSON.stringify(reading.value)
+                    }
                 </div>
             )
         },

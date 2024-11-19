@@ -58,8 +58,13 @@ export default function CropCard({ className, ...props }: CropCardProps) {
                                             </p>
                                             {
                                                 sensor.lastSensedReading ? 
-                                                <p>{JSON.stringify(sensor.lastSensedReading.value)}</p>
-                                                : <p className="text-xs text-muted-foreground ml-2">No data</p>
+                                                <p className="text-xs text-muted-foreground ml-2">
+                                                    {JSON.stringify(sensor.lastSensedReading.value)}
+                                                </p>
+                                                :
+                                                <p className="text-xs text-muted-foreground ml-2">
+                                                    No data
+                                                </p>
                                             }
                                         </div>
                                     ))}

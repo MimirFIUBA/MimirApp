@@ -4,7 +4,7 @@ import { useToast } from "@/components/ui/use-toast";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 export interface WebSocketMessage {
-  type: string;
+  type: "update" | "alert" | "notification";
   payload: any;
 }
 
@@ -34,12 +34,10 @@ export const WebSocketProvider: React.FC<{ url: string; children: React.ReactNod
       try {
         const data: WebSocketMessage = JSON.parse(event.data);
         if (data.type === "alert") {
-            // toast.error(`Alerta: ${data.payload.message || "¡Ha ocurrido un evento importante!"}`);
-            console.log(data.payload)
             toast({
                 variant: "destructive",
                 title: "Alerta!",
-                description: "una nueva alerta",
+                description: data.payload.message,
             })
         }
         setMessages((prev) => [...prev, data]);
