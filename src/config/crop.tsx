@@ -29,3 +29,8 @@ type SensorReading = {
     topic: string,
     time: Date 
 }
+
+type JSONData = {
+    name: string;
+    path: string;
+}
