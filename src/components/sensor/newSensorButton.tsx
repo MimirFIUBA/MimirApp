@@ -5,13 +5,13 @@ import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
   } from "@/components/ui/dialog"
 import { PlusIcon } from "@radix-ui/react-icons"
 import NewSensorForm from "@/components/sensor/newSensorForm"
+import NewSensorFormWrapper from "./newSensorFormWrapper";
 
 export default function NewSensorButton({ crops, onSubmit } : { crops?: Array<Crop>, onSubmit?: () => void }) {
     const [open, setOpen] = React.useState(false);
@@ -28,11 +28,14 @@ export default function NewSensorButton({ crops, onSubmit } : { crops?: Array<Cr
                     <PlusIcon className="mr-2 h-6 w-6" />Sensor
                 </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[825px]">
                 <DialogHeader>
                 <DialogTitle>Registrar sensor</DialogTitle>
                 </DialogHeader>
-                <NewSensorForm onSubmit={handleOnSubmit} crops={crops}/>
+                { crops != undefined 
+                    ? <NewSensorForm onSubmit={handleOnSubmit} crops={crops} />
+                    : <NewSensorFormWrapper onSubmit={handleOnSubmit} />
+                }
             </DialogContent>
         </Dialog>
     );
