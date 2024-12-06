@@ -1,4 +1,4 @@
-'use client'; // Es necesario porque este código depende de Web APIs como WebSocket
+'use client';
 
 import { useToast } from "@/components/ui/use-toast";
 import React, { createContext, useContext, useEffect, useState } from "react";

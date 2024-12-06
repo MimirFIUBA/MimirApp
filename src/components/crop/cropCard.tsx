@@ -52,18 +52,18 @@ export default function CropCard({ className, ...props }: CropCardProps) {
                                 <h1 className="text-sm mb-2 font-medium leading-none">{node.name}</h1>
                                 <div className="flex-1 space-y-1">
                                     {node.sensors?.map((sensor) => (
-                                        <div key={sensor.id} className="flex flex-row">
-                                            <p className="text-xs">
-                                                {sensor.name}
-                                            </p>
+                                        <div key={sensor.id} className="flex flex-row items-end">
+                                            <Link href={"/topics/" + sensor.id + "/view"} className="pt-1 text-xs">
+                                                <p>{sensor.dataLabel}</p>
+                                            </Link>
                                             {
-                                                sensor.lastSensedReading ? 
+                                                sensor.lastSensedReading && sensor.lastSensedReading.value ? 
                                                 <p className="text-xs text-muted-foreground ml-2">
                                                     {JSON.stringify(sensor.lastSensedReading.value)}
                                                 </p>
                                                 :
                                                 <p className="text-xs text-muted-foreground ml-2">
-                                                    No data
+                                                    Sin datos
                                                 </p>
                                             }
                                         </div>

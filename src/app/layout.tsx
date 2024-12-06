@@ -9,13 +9,14 @@ import Header from "@/components/header"
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { WebSocketProvider } from "@/hooks/websocket-provider";
+import AppFooter from "@/components/app-footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Mimir",
   description: "Web application for hydroponic crop monitoring.",
-  icons: [{ rel: "icon", url: "icon.svg" }]
+  icons: [{ rel: "icon", url: "/favicon.ico" }]
 };
 
 
@@ -32,17 +33,16 @@ export default async function RootLayout({
       <body className={inter.className}>
         <WebSocketProvider url="ws://localhost:8080/ws">
           <Toaster></Toaster>
-          <div className="flex flex-col min-h-screen bg-white dark:bg-gradient-to-b dark:from-slate-700 dark:to-slate-900">
             <SidebarProvider defaultOpen={defaultOpen}>
               <AppSidebar />
               <main className="w-full">
                 <Header/>
-                <div>
+                <div className="flex flex-col overflow-hidden min-h-screen bg-white dark:bg-gradient-to-b dark:from-slate-700 dark:to-slate-900">
                   {children}
                 </div>
+                <AppFooter></AppFooter>
               </main>
             </SidebarProvider>
-          </div>
         </WebSocketProvider>
       </body>
     </html>

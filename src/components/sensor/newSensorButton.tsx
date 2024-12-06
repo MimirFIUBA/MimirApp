@@ -25,7 +25,7 @@ export default function NewSensorButton({ crops, onSubmit } : { crops?: Array<Cr
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button>
-                    <PlusIcon className="mr-2 h-6 w-6" />Sensor
+                    <PlusIcon className="mr-2" />Sensor
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">

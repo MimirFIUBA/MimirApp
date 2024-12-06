@@ -1,24 +1,18 @@
 "use client"
 import * as React from "react"
 
-import { ReloadIcon } from "@radix-ui/react-icons"
+import { HomeIcon, ReloadIcon } from "@radix-ui/react-icons"
 import { Button } from "@/components/ui/button";
 import NewSensorButton from "@/components/sensor/newSensorButton";
-import CropCard from "../../components/crop/cropCard";
 import { useEffect, useState } from "react";
 import NewCropButton from "@/components/crop/newCropButton";
 import NewNodeButton from "@/components/sensorNode/newNodeButton";
 import Loading from "@/components/ui/loading";
 import ErrorDisplayer from "@/components/error-displayer";
 import PageHeader from "@/components/page-header";
-import { Home } from "@mui/icons-material";
 import { useWebSocket } from "@/hooks/websocket-provider";
+import { CropDashboard } from "@/components/crop/crop-dashboard";
 
-interface CropDashboardProps {
-    loading: boolean,
-    refresh: () => void,
-    crops?: Crop[]
-}
 
 function updateSensorReading(
     crops: Crop[],
@@ -64,22 +58,6 @@ function updateSensorReading(
     return [];
 }
 
-function CropDashboard({...props} : CropDashboardProps) {
-    const crops = props.crops
-    if (crops == undefined || props.loading) {
-        return <p></p>
-    } 
-    return (
-        <div className="m-2 flex flex-row flex-wrap">
-            {crops.map((crop) => (
-                <div key={crop.id} className="m-2">
-                    <CropCard crop={crop} onSubmit={props.refresh} />
-                </div>
-            ))}
-        </div>
-    )
-}
-
 export default function HomeCmp() {
     const [crops, setCrops] = useState<Crop[]>([])
     const [isLoading, setIsLoading] = useState(true)
@@ -103,9 +81,14 @@ export default function HomeCmp() {
                 setCrops(updatedCrops)
             }
         }
-    }, [messages]);
+    }, [messages, crops]);
 
     useEffect(() => {
+        refresh()
+    }, []);
+
+    const refresh = () => {
+        setIsLoading(true)
         fetch('/api/groups')
         .then((res) => {
             if (res.status != 200) {
@@ -116,7 +99,6 @@ export default function HomeCmp() {
         })
         .then((data) => {
             setCrops(data.items)
-            setIsLoading(false)
         })
         .catch(error => {
             setErrorMessage("No pudimos cargar la informacion de los cultivos: " + error.message)
@@ -124,41 +106,40 @@ export default function HomeCmp() {
         .finally(() => {
             setIsLoading(false)
         });
-    }, []);
-
-    const refresh = () => {
-        fetch('api/groups')
-        .then((res) => res.json())
-        .then((data) => {
-            setCrops(data.items);
-            setIsLoading(false);
-        })
     };
     
     return (
         <>
-        <PageHeader icon={<Home></Home>} title="Home" className="p-6"></PageHeader>
-            <div className="flex flex-row justify-between">
-                <div className="ml-4">
-                    <Button variant="outline" className="mr-2" size="icon" onClick={refresh}>
-                        <ReloadIcon className="h-4 w-4 m-2" />
-                    </Button>
-                </div>
+        <PageHeader className="p-6"
+            icon={<HomeIcon width={24} height={24}/>}
+            title="Home"
+            rigthComponent={
+                <div className="flex flex-row justify-between">
+                    <div className="mr-4">
+                        <Button variant="outline" className="mr-2" size="icon" onClick={refresh}>
+                            <ReloadIcon className="h-4 w-4 m-2" />
+                        </Button>
+                    </div>
 
-                <div className="space-x-2">
-                    <NewCropButton onSubmit={refresh} />
-                    <NewNodeButton crops={crops} onSubmit={refresh}/>
-                    <NewSensorButton crops={crops} onSubmit={refresh}/>
+                    <div className="space-x-2">
+                        <NewCropButton onSubmit={refresh} />
+                        <NewNodeButton crops={crops} onSubmit={refresh}/>
+                        <NewSensorButton crops={crops} onSubmit={refresh}/>
+                    </div>
                 </div>
-            </div>
-            {
-                isLoading 
-                ? <Loading text="Cargando" />
-                : <CropDashboard loading={isLoading} crops={crops} refresh={refresh} />
             }
+        >
+        </PageHeader>
             {
                 errorMessage != "" &&
                 <ErrorDisplayer message={errorMessage}></ErrorDisplayer>
+            }
+            {
+                isLoading && <Loading text="Cargando" />
+            }
+            {
+                !isLoading && errorMessage == "" &&
+                <CropDashboard loading={isLoading} crops={crops} refresh={refresh}/>
             }
         </>
     );

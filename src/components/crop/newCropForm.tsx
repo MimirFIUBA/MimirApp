@@ -33,7 +33,7 @@ export default function NewCropForm({ onSubmit, crop } : FormProps) {
     const defaultValues = {
         name: "",
         description: "",
-        type: ""
+        type: "crop"
     }
     const values = (crop != undefined) ? crop : defaultValues
 
@@ -99,19 +99,6 @@ export default function NewCropForm({ onSubmit, crop } : FormProps) {
                 render={({ field }) => (
                     <FormItem>
                         <FormLabel>Descripci&oacute;n</FormLabel>
-                        <FormControl>
-                            <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )}
-                />
-                <FormField
-                control={form.control}
-                name="type"
-                render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Tipo</FormLabel>
                         <FormControl>
                             <Input {...field} />
                         </FormControl>

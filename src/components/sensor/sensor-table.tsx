@@ -36,9 +36,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select"
 import Loading from "@/components/ui/loading";
 import Link from 'next/link'
-
 
 export const columns: ColumnDef<Sensor>[] = [
     {
@@ -80,7 +86,7 @@ export const columns: ColumnDef<Sensor>[] = [
             const sensor = row.original;
             return (
                 <div className="capitalize">
-                    <Link href={"/sensor/" + sensor.id + "/view"} className="pt-1">
+                    <Link href={"/topics/" + sensor.id + "/view"} className="pt-1">
                         {row.getValue("name")}
                     </Link>
                 </div>
@@ -97,13 +103,31 @@ export const columns: ColumnDef<Sensor>[] = [
         )
         },
         cell: ({ row }) => {
+            const sensor = row.original
             const reading: SensorReading = row.getValue("lastSensedReading")
             return(
                 <div>
                     { 
-                        reading && 
-                        JSON.stringify(reading.value)
+                        reading && reading.value && 
+                        JSON.stringify(reading.value) + sensor.unit
                     }
+                </div>
+            )
+        },
+    },
+    {
+        accessorKey: "isActive",
+        header: () => {
+        return (
+            <div>
+                Estado
+            </div>
+        )
+        },
+        cell: ({ row }) => {
+            return(
+                <div>
+                    {row.getValue("isActive") ? "Activo": "Inactivo"}
                 </div>
             )
         },
@@ -165,7 +189,7 @@ export const columns: ColumnDef<Sensor>[] = [
         id: "actions",
         enableHiding: false,
         cell: ({ row }) => {
-        const payment = row.original
+        const sensor = row.original
 
         return (
             <DropdownMenu>
@@ -177,14 +201,16 @@ export const columns: ColumnDef<Sensor>[] = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuItem
-                    onClick={() => navigator.clipboard.writeText(payment.id)}
-                >
-                Copy payment ID
+                <DropdownMenuItem>
+                    <Link href={"/topics/" + sensor.id + "/view"}>Agregar handler</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                    <Link href={"/topics/" + sensor.id + "/view"}>Agregar trigger</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>View customer</DropdownMenuItem>
-                <DropdownMenuItem>View payment details</DropdownMenuItem>
+                <DropdownMenuItem>
+                    <Link href={"/topics/" + sensor.id + "/view"}>Ver</Link>
+                </DropdownMenuItem>
             </DropdownMenuContent>
             </DropdownMenu>
         )
@@ -219,25 +245,23 @@ export function SensorTable({...props} : SensorTableProps) {
         onColumnVisibilityChange: setColumnVisibility,
         onRowSelectionChange: setRowSelection,
         state: {
-        sorting,
-        columnFilters,
-        columnVisibility,
-        rowSelection,
+            sorting,
+            columnFilters,
+            columnVisibility,
+            rowSelection,
         },
     })
-
-    const sensors = props.sensors
 
     return (
         <div className="w-full">
         <div className="flex items-center py-4">
             <Input
-            placeholder="Filtrar sensores..."
-            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-                table.getColumn("name")?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
+                placeholder="Filtrar sensores..."
+                value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+                onChange={(event) =>
+                    table.getColumn("name")?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm"
             />
             <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -266,6 +290,29 @@ export function SensorTable({...props} : SensorTableProps) {
             </DropdownMenuContent>
             </DropdownMenu>
         </div>
+        <div className="flex flex-row mb-6">
+            <div className="flex flex-col">
+                <h1 className="text-xs ml-1 font-bold">Estado:</h1>
+                <Select onValueChange={(event) => {
+                    if (event != "all") {
+                        const filterValue = event == 'active'
+                        table.getColumn("isActive")?.setFilterValue(filterValue)
+                    } else {
+                        table.resetColumnFilters()
+                    }
+                }}>
+                    <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Estado" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">Todos</SelectItem>
+                        <SelectItem value="active">Activo</SelectItem>
+                        <SelectItem value="inactive">Inactivo</SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
+        </div>
+
         {
             props.loading ?
             <Loading text="Cargando"></Loading>

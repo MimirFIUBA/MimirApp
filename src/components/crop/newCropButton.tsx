@@ -27,7 +27,7 @@ export default function NewCropButton({ onSubmit } : { onSubmit: () => void }) {
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button>
-                    <PlusIcon className="mr-2 h-6 w-6" />Cultivo
+                    <PlusIcon className="mr-2" />Cultivo
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">

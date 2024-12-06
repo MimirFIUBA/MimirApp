@@ -9,7 +9,6 @@ export default function Page({ params }: { params: { id: string } }) {
     const [isLoading, setIsLoading] = React.useState(true)
 
     React.useEffect(() => {
-        console.log(params.id)
         fetch('/api/groups/' + params.id)
         .then((res) => res.json())
         .then((data) => {

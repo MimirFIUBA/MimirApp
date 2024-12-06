@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import {
     Form,
     FormControl,
+    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -28,15 +29,13 @@ const formSchema = z.object({
     name: z.string().min(2, {
         message: "El nombre debe tener al menos dos caracteres.",
     }),
-    groupId: z.string({
-        required_error: "El cultivo es requerido",
-    }),
-    nodeId: z.string({
-        required_error: "El nodo es requerido",
-    }),
-    dataType: z.string({
-        required_error: "El tipo de dato es requerido",
-    })
+    groupId: z.string().optional(),
+    nodeId: z.string().optional(),
+    dataName: z.string(),
+    dataLabel: z.string().optional(),
+    unit: z.string().max(32, {
+        message: "La unidad no puede tener más de 32 carácteres."
+    }).optional()
 })
 
 interface NewSensorFormProps {
@@ -50,9 +49,11 @@ interface NewSensorFormProps {
 interface CropFieldProps {
     control: Control<{
         name: string;
-        groupId: string;
-        nodeId: string;
-        dataType: string;
+        groupId?: string;
+        nodeId?: string;
+        dataName: string;
+        dataLabel?: string;
+        unit?: string;
     }>,
     crops?: Array<Crop>,
     crop?: Crop,
@@ -62,9 +63,11 @@ interface CropFieldProps {
 interface NodeFieldProps {
     control: Control<{
         name: string;
-        groupId: string;
-        nodeId: string;
-        dataType: string;
+        groupId?: string;
+        nodeId?: string;
+        dataName: string;
+        dataLabel?: string;
+        unit?: string;
     }>,
     crop?: Crop,
     nodes?: Array<SensorNode>
@@ -231,6 +234,7 @@ export default function NewSensorForm({ ...props } : NewSensorFormProps) {
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+
                 <FormField
                 control={form.control}
                 name="name"
@@ -240,38 +244,62 @@ export default function NewSensorForm({ ...props } : NewSensorFormProps) {
                     <FormControl>
                         <Input {...field} />
                     </FormControl>
+                    <FormDescription>Nombre del sensor.</FormDescription>
                     <FormMessage />
                     </FormItem>
                 )}
                 />
+                <div className="flex flex-row justify-between space-x-6">
+                    <div className="flex-1">
+                        <FormField
+                        control={form.control}
+                        name="dataName"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Nombre de la unidad</FormLabel>
+                            <FormControl>
+                                <Input {...field} />
+                            </FormControl>
+                            <FormDescription>Este es el nombre con el que se va a reconocer el dato.</FormDescription>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                        />
+                        <FormField
+                        control={form.control}
+                        name="dataLabel"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Etiqueta</FormLabel>
+                            <FormControl>
+                                <Input {...field} />
+                            </FormControl>
+                            <FormDescription>Este es el nombre que se va a mostrar.</FormDescription>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                        />
+                    </div>
+                    <div className="w-32">
+                        <FormField
+                        control={form.control}
+                        name="unit"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Unidad</FormLabel>
+                            <FormControl>
+                                <Input {...field} />
+                            </FormControl>
+                            <FormDescription>Esta es la unidad que se va a mostrar junto con la lectura.</FormDescription>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                        />
+                    </div>
+                </div>
+                
                 <CropField control={form.control} crops={props.crops} disabled={isCropSelectionDisabled}></CropField>
                 <NodeField control={form.control} nodes={selectedCrop?.nodes}></NodeField>
-                <FormField
-                control={form.control}
-                name="dataType"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Tipo de dato</FormLabel>
-                    <FormControl>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Selecciona un tipo de dato." />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                <SelectItem value="any">Any</SelectItem>
-                                <SelectItem value="boolean">Boolean</SelectItem>
-                                <SelectItem value="float">Float</SelectItem>
-                                <SelectItem value="int">Integer</SelectItem>
-                                <SelectItem value="string">String</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
-                    </FormControl>
-                    <FormMessage />
-                    </FormItem>
-                )}
-                />
                 <Button type="submit">Registrar</Button>
             </form>
     </Form>

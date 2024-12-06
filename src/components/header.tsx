@@ -6,6 +6,9 @@ import { Switch } from "@/components/ui/switch"
 import { BellIcon, MoonIcon, SunIcon } from "@radix-ui/react-icons"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import AlertButton from "./alert-button"
+import mimirLogo from "@/images/mimir_logo.svg";
+import Image from 'next/image';
+import Link from "next/link"
 
 
 export default function Header() {
@@ -57,11 +60,24 @@ export default function Header() {
     };
 
     return(
-        <div className="flex p-4 pl-8 min-h-16 
-        bg-gradient-to-l from-primary to-primary-dark text-primary-foreground shadow
+        <header className="sticky top-0 flex p-4 pl-8 min-h-16 
+        bg-gradient-to-r from-header-background to-header-dark text-primary-foreground shadow
         items-center z-40 ">
-            <SidebarTrigger/>
-            <h1 className="text-xl font-bold pl-2">MIMIR</h1>
+            <div className="relative top-8 -left-12">
+                <SidebarTrigger className="bg-white rounded border w-7 h-7 text-black"/>
+            </div>
+            <Link href="/">
+                <div className="relative p-1 mr-2 rounded-full bg-white ">
+                        <div className="relative p-4 ">
+                            <Image priority fill={true} src="/images/mimir_logo.svg" alt="mimir logo"></Image>
+                        </div>
+                </div>
+            </Link>
+            <h1 className="text-xl font-bold pl-2">
+                <Link href="/">
+                    MIMIR
+                </Link>
+            </h1>
             <span className="flex-1"></span>
             <span>
                 <AlertButton count={50}></AlertButton>
@@ -73,6 +89,6 @@ export default function Header() {
                 onCheckedChange={onThemeChange}/>
               <MoonIcon/>
             </span>
-          </div>
+          </header>
     );
 }
